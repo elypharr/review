@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkbox Form</title>
+</head>
+<body>
+  <form id="itemsForm">
+    <!-- Checkboxes will be inserted here by JavaScript -->
+  </form>
+  <button type="submit" form="itemsForm">Submit</button>
+
+  <div id="review">
+    <!-- Selected items will be reviewed here -->
+  </div>
+
+  <script>
+    // Sample JSON response
+    const response = [
+      {"id": 1, "name": "Item 1"},
+      {"id": 2, "name": "Item 2"},
+      {"id": 3, "name": "Item 3"}
+    ];
+
+    // Function to create checkboxes and append to form
+    function createCheckboxes(items) {
+      const form = document.getElementById('itemsForm');
+      items.forEach(item => {
+        const label = document.createElement('label');
+        const checkbox = document.createElement('input');
+        
+        checkbox.type = 'checkbox';
+        checkbox.name = 'items';
+        checkbox.value = item.id;
+        
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(item.name));
+        form.appendChild(label);
+        form.appendChild(document.createElement('br'));
+      });
+    }
+
+    // Function to handle form submission
+    function handleFormSubmit(event) {
+      event.preventDefault();
+      
+      const selectedItems = [];
+      const checkboxes = document.querySelectorAll('input[name="items"]:checked');
+      
+      checkboxes.forEach(checkbox => {
+        const item = response.find(item => item.id == checkbox.value);
+        if (item) {
+          selectedItems.push(item.name);
+        }
+      });
+      
+      displayReview(selectedItems);
+    }
+
+    // Function to display the selected items in the review section
+    function displayReview(items) {
+      const reviewDiv = document.getElementById('review');
+      reviewDiv.innerHTML = '';
+
+      if (items.length === 0) {
+        reviewDiv.innerText = 'No items selected.';
+      } else {
+        const ul = document.createElement('ul');
+        items.forEach(item => {
+          const li = document.createElement('li');
+          li.innerText = item;
+          ul.appendChild(li);
+        });
+        reviewDiv.appendChild(ul);
+      }
+    }
+
+    // Add event listener to the form
+    document.getElementById('itemsForm').addEventListener('submit', handleFormSubmit);
+
+    // Call the function with the response data
+    createCheckboxes(response);
+  </script>
+</body>
+</html>
